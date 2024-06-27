@@ -27,22 +27,17 @@ fn get_serial_ports() -> Result<Vec<String>, String> {
 
 #[tauri::command]
 fn connect(port: String, device: State<'_, GlobalDeviceMutex>) -> Result<(), String> {
-    let mut slot = device.lock().unwrap();
     let connection = Agilent6612c::new(port, ConnectionParameters::default(), None)
         .map_err(|error| error.to_string())?;
 
-    slot.replace(connection);
+    device.lock().unwrap().replace(connection);
 
     Ok(())
 }
 
 #[tauri::command]
-fn disconnect(device: State<'_, GlobalDeviceMutex>) -> Result<(), String> {
-    let mut slot: std::sync::MutexGuard<Option<Agilent6612c>> = device.lock().unwrap();
-
-    slot.take();
-
-    Ok(())
+fn disconnect(device: State<'_, GlobalDeviceMutex>) {
+    device.lock().unwrap().take();
 }
 
 #[tauri::command(async)]
