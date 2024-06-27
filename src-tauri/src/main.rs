@@ -1,5 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![allow(clippy::significant_drop_tightening, clippy::needless_pass_by_value)]
 
 use agilent6612c::{device::Agilent6612c, params::ConnectionParameters};
 use std::sync::Mutex;
